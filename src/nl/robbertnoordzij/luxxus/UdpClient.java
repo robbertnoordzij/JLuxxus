@@ -6,7 +6,7 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 
 import nl.robbertnoordzij.luxxus.events.EventManager;
-import nl.robbertnoordzij.luxxus.events.UdpPacketReceivedEvent;
+import nl.robbertnoordzij.luxxus.events.events.UdpPacketReceivedEvent;
 
 public class UdpClient {
 	

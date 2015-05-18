@@ -2,9 +2,18 @@ package nl.robbertnoordzij.luxxus.events;
 
 import java.util.ArrayList;
 
+import nl.robbertnoordzij.luxxus.events.events.Event;
+import nl.robbertnoordzij.luxxus.events.events.GatewayConnectedEvent;
+import nl.robbertnoordzij.luxxus.events.events.LampStateChangedEvent;
+import nl.robbertnoordzij.luxxus.events.events.UdpPacketReceivedEvent;
+import nl.robbertnoordzij.luxxus.events.listeners.EventListener;
+import nl.robbertnoordzij.luxxus.events.listeners.GatewayConnectedListener;
+import nl.robbertnoordzij.luxxus.events.listeners.LampStateChangedListener;
+import nl.robbertnoordzij.luxxus.events.listeners.UdpPackageReceivedListener;
+
 public class EventManager {
 	private static EventManager instance;
-	
+
 	private ArrayList<GatewayConnectedListener> gatewayConnectedListeners = new ArrayList<GatewayConnectedListener>();
 	private ArrayList<LampStateChangedListener> lampStateChangedListeners = new ArrayList<LampStateChangedListener>();
 	private ArrayList<UdpPackageReceivedListener> udpPackageReceivedListeners = new ArrayList<UdpPackageReceivedListener>();
@@ -31,21 +40,33 @@ public class EventManager {
 		}
 	}
 	
-	public void triggerLampStateChanged() {
+	public void triggerLampStateChanged(LampStateChangedEvent event) {
 		for (LampStateChangedListener listener : lampStateChangedListeners) {
-			listener.onLampStateChanged();
+			listener.onLampStateChanged(event);
+			
+			if (event.isStopped()) {
+				break;
+			}
 		}
 	}
 	
-	public void triggerGatewayConnected() {
+	public void triggerGatewayConnected(GatewayConnectedEvent event) {
 		for (GatewayConnectedListener listener : gatewayConnectedListeners) {
-			listener.onGatewayConnected();
+			listener.onGatewayConnected(event);
+			
+			if (event.isStopped()) {
+				break;
+			}
 		}
 	}
 	
 	public void triggerUdpPacketReceived(UdpPacketReceivedEvent event) {
 		for (UdpPackageReceivedListener listener : udpPackageReceivedListeners) {
 			listener.onUdpPackageReceived(event);
+			
+			if (event.isStopped()) {
+				break;
+			}
 		}
 	}
 	

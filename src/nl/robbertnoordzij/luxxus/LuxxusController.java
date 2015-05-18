@@ -1,8 +1,10 @@
 package nl.robbertnoordzij.luxxus;
 
 import nl.robbertnoordzij.luxxus.events.EventManager;
-import nl.robbertnoordzij.luxxus.events.GatewayConnectedListener;
-import nl.robbertnoordzij.luxxus.events.LampStateChangedListener;
+import nl.robbertnoordzij.luxxus.events.events.GatewayConnectedEvent;
+import nl.robbertnoordzij.luxxus.events.events.LampStateChangedEvent;
+import nl.robbertnoordzij.luxxus.events.listeners.GatewayConnectedListener;
+import nl.robbertnoordzij.luxxus.events.listeners.LampStateChangedListener;
 
 public class LuxxusController implements GatewayConnectedListener, LampStateChangedListener {
 	
@@ -17,13 +19,11 @@ public class LuxxusController implements GatewayConnectedListener, LampStateChan
 		client.connect();
 	}
 	
-	public void onLampStateChanged() {
-		System.out.println("State changed...");
-		lamps = client.getLamps();
+	public void onLampStateChanged(LampStateChangedEvent event) {
+		
 	}
 
-	public void onGatewayConnected() {
-		System.out.println("Connected to gateway...");
+	public void onGatewayConnected(GatewayConnectedEvent event) {
 		lamps = client.getLamps();
 	}
 	

@@ -1,8 +1,8 @@
-package nl.robbertnoordzij.luxxus.events;
+package nl.robbertnoordzij.luxxus.events.events;
 
 import java.net.DatagramPacket;
 
-public class UdpPacketReceivedEvent {
+public class UdpPacketReceivedEvent extends Event {
 	private DatagramPacket packet;
 	
 	public UdpPacketReceivedEvent(DatagramPacket packet) {

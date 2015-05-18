@@ -8,8 +8,10 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 
 import nl.robbertnoordzij.luxxus.events.EventManager;
-import nl.robbertnoordzij.luxxus.events.UdpPackageReceivedListener;
-import nl.robbertnoordzij.luxxus.events.UdpPacketReceivedEvent;
+import nl.robbertnoordzij.luxxus.events.events.GatewayConnectedEvent;
+import nl.robbertnoordzij.luxxus.events.events.LampStateChangedEvent;
+import nl.robbertnoordzij.luxxus.events.events.UdpPacketReceivedEvent;
+import nl.robbertnoordzij.luxxus.events.listeners.UdpPackageReceivedListener;
 
 public class LuxxusClient implements UdpPackageReceivedListener {
 
@@ -84,7 +86,7 @@ public class LuxxusClient implements UdpPackageReceivedListener {
 			tcpSocket.getOutputStream().write(buffer.toByteArray());
 			
 			byte[] header = new byte[10];
-			if (tcpSocket.getInputStream().read(header, 0, 10) == 10) {
+			if (tcpSocket.getInputStream().read(header, 0, 10) == 10 && header[9] > 0) {
 
 				byte[] data = new byte[header[9]];
 				
@@ -145,7 +147,7 @@ public class LuxxusClient implements UdpPackageReceivedListener {
 			
 			byte[] header = new byte[10];
 			if (tcpSocket.getInputStream().read(header, 0, 10) == 10 && header[9] == 0) {
-				eventManager.triggerLampStateChanged();
+				eventManager.triggerLampStateChanged(new LampStateChangedEvent());
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -154,8 +156,6 @@ public class LuxxusClient implements UdpPackageReceivedListener {
 	}
 	
 	public void onUdpPackageReceived(UdpPacketReceivedEvent event) {
-		System.out.println("Udp Packet received...");
-		
 		DatagramPacket packet = event.getPacket();
 		
 		gateway = packet.getAddress();
@@ -164,7 +164,7 @@ public class LuxxusClient implements UdpPackageReceivedListener {
 		boolean added = addedDevices != packet.getData()[22];
 		
 		if (connected && (removed || added)) {
-			eventManager.triggerLampStateChanged();
+			eventManager.triggerLampStateChanged(new LampStateChangedEvent());
 		}
 		
 		if (!connected) {
@@ -182,7 +182,7 @@ public class LuxxusClient implements UdpPackageReceivedListener {
 			tcpSocket = new Socket(gateway, portOut);
 			connected = true;
 			
-			eventManager.triggerGatewayConnected();
+			eventManager.triggerGatewayConnected(new GatewayConnectedEvent());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
