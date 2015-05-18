@@ -3,27 +3,25 @@ package nl.robbertnoordzij.luxxus;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.SocketException;
 import java.nio.ByteBuffer;
 
 import nl.robbertnoordzij.luxxus.events.EventManager;
+import nl.robbertnoordzij.luxxus.events.UdpPackageReceivedListener;
+import nl.robbertnoordzij.luxxus.events.UdpPacketReceivedEvent;
 
-public class LuxxusClient {
+public class LuxxusClient implements UdpPackageReceivedListener {
 
 	private EventManager eventManager = EventManager.getInstance();
-	
-	private ListenThread listenThread = new ListenThread();
-	
-	private DatagramSocket udpSocket;
 	
 	private Socket tcpSocket;
 	
 	private int portIn = 41328;
 	
 	private int portOut = 41330;
+	
+	private UdpClient udpClient;
 	
 	private InetAddress gateway;
 	
@@ -44,31 +42,18 @@ public class LuxxusClient {
 	}
 	
 	public void connect() {
-		try {
-			udpSocket = new DatagramSocket(portIn);
-			udpSocket.setBroadcast(true);
-			
-			startListenthread();
-		} catch (SocketException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		udpClient = new UdpClient(portIn);
+		udpClient.getEventManager().addUdpPacketReceivedListener(this);
+		udpClient.connect();
 	}
 	
 	public boolean isConnected() {
 		return connected;
 	}
 	
-	public void disconnect() {
-		listenThread.close();
-		udpSocket.disconnect();
-		
-		try {
-			tcpSocket.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public void disconnect() throws IOException {
+		udpClient.disconnect();
+		tcpSocket.close();
 	}
 	
 	public LuxxusLamp[] getLamps() {
@@ -160,7 +145,7 @@ public class LuxxusClient {
 			
 			byte[] header = new byte[10];
 			if (tcpSocket.getInputStream().read(header, 0, 10) == 10 && header[9] == 0) {
-				eventManager.triggerLampStateChange();
+				eventManager.triggerLampStateChanged();
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -168,18 +153,18 @@ public class LuxxusClient {
 		}
 	}
 	
-	private void startListenthread() {
-		listenThread.start();
-	}
-	
-	private void processUdpPacket(DatagramPacket packet) {
+	public void onUdpPackageReceived(UdpPacketReceivedEvent event) {
+		System.out.println("Udp Packet received...");
+		
+		DatagramPacket packet = event.getPacket();
+		
 		gateway = packet.getAddress();
 		
 		boolean removed = removedDevices != packet.getData()[21];
 		boolean added = addedDevices != packet.getData()[22];
 		
 		if (connected && (removed || added)) {
-			eventManager.triggerLampStateChange();
+			eventManager.triggerLampStateChanged();
 		}
 		
 		if (!connected) {
@@ -204,29 +189,4 @@ public class LuxxusClient {
 		}
 	}
 	
-	private class ListenThread extends Thread {
-		
-		private volatile boolean running = true;
-		
-		@Override
-		public void run() {
-			byte[] buffer = new byte[2048];
-			DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-			
-			while (running) {
-				try {
-					udpSocket.receive(packet);
-					processUdpPacket(packet);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-		
-		public void close() {
-			running = false;
-		}
-		
-	}
 }
