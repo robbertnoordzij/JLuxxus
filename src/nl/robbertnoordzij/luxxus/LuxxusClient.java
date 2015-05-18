@@ -1,17 +1,18 @@
 package nl.robbertnoordzij.luxxus;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.nio.ByteBuffer;
 
 import nl.robbertnoordzij.luxxus.events.EventManager;
 import nl.robbertnoordzij.luxxus.events.events.GatewayConnectedEvent;
 import nl.robbertnoordzij.luxxus.events.events.LampStateChangedEvent;
 import nl.robbertnoordzij.luxxus.events.events.UdpPacketReceivedEvent;
 import nl.robbertnoordzij.luxxus.events.listeners.UdpPackageReceivedListener;
+import nl.robbertnoordzij.luxxus.requests.AbstractLuxxusRequest;
+import nl.robbertnoordzij.luxxus.requests.GetLampsRequest;
+import nl.robbertnoordzij.luxxus.requests.UpdateLampsRequest;
 
 public class LuxxusClient implements UdpPackageReceivedListener {
 
@@ -58,101 +59,54 @@ public class LuxxusClient implements UdpPackageReceivedListener {
 		tcpSocket.close();
 	}
 	
+	private void sendRequest(AbstractLuxxusRequest request) {
+		try {
+			tcpSocket.getOutputStream().write(request.getBytes());
+			
+			byte[] header = new byte[10];
+			if (tcpSocket.getInputStream().read(header, 0, 10) == 10 && header[9] > 0) {
+				byte[] bytes = new byte[header[9]];
+				tcpSocket.getInputStream().read(bytes, 0, header[9]);
+				
+				request.setResponse(bytes);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public LuxxusLamp[] getLamps() {
 		if (!connected) {
 			return null;
 		}
 		
-		LuxxusLamp[] lamps = null;
+		GetLampsRequest request = new GetLampsRequest(gatewayId);
+		sendRequest(request);
+		byte[] data = request.getResponse();
+			
+		LuxxusLamp[] lamps = new LuxxusLamp[data.length / 8];
 		
-		try {
-			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-			buffer.write(0xf3);
-			buffer.write(0xd4); // Query current state
-		
-			byte[] gatewayIdArray = ByteBuffer.allocate(4).putInt(gatewayId).array();
-			buffer.write(gatewayIdArray);
+		for (int i = 0; i < lamps.length; i++) {
+			int offset = (i * 8);
 			
-			buffer.write(0x00);
-			buffer.write(0x00);
-			buffer.write(0x1d);
-			buffer.write(0x05);
-			buffer.write(0x00);
-			buffer.write(0x00);
-			buffer.write(0x00);
-			buffer.write(0x43);
-			buffer.write(0x00);
+			int deviceId = Utility.int32FromBytes(data, offset);
 			
-			tcpSocket.getOutputStream().write(buffer.toByteArray());
+			int red = Utility.intFromByte(data[offset + 6]);
+			int green = Utility.intFromByte(data[offset + 5]);
+			int blue = Utility.intFromByte(data[offset + 4]);
+			int intensity = Utility.intFromByte(data[offset + 7]);
 			
-			byte[] header = new byte[10];
-			if (tcpSocket.getInputStream().read(header, 0, 10) == 10 && header[9] > 0) {
-
-				byte[] data = new byte[header[9]];
-				
-				tcpSocket.getInputStream().read(data, 0, header[9]);
-				
-				lamps = new LuxxusLamp[data.length / 8];
-				
-				for (int i = 0; i < lamps.length; i++) {
-					int offset = (i * 8);
-					
-					int deviceId = Utility.int32FromBytes(data, offset);
-					
-					int red = data[offset + 6] & 0xff;
-					int green = data[offset + 5] & 0xff;
-					int blue = data[offset + 4] & 0xff;
-					int intensity = data[offset + 7] & 0xff;
-					
-					LuxxusLamp lamp = new LuxxusLamp(deviceId, red, green, blue, intensity);
-					lamps[i] = lamp;
-				}
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LuxxusLamp lamp = new LuxxusLamp(deviceId, red, green, blue, intensity);
+			lamps[i] = lamp;
 		}
 		
 		return lamps;
 	}
 	
 	public void updateLamps(LuxxusLamp[] lamps) {
-		try {
-			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-			buffer.write(0xf2);
-			buffer.write(0xc2); // Light control
-			
-			buffer.write(0xff);
-			buffer.write(0xff);
-			buffer.write(0xff);
-			buffer.write(0xff);
-	
-			buffer.write(0x00);
-			buffer.write(0x00);
-			buffer.write(0x1d);
-	
-	        int length = lamps.length * 8 + 4;
-	        buffer.write((byte)length); //data length
-	
-	        buffer.write(0x00);
-	        buffer.write(0x00);
-	        buffer.write(0x00);
-	        buffer.write(0x43);
-		
-			for (LuxxusLamp lamp : lamps) {
-				buffer.write(lamp.getBytes());
-			}
-			
-			tcpSocket.getOutputStream().write(buffer.toByteArray());
-			
-			byte[] header = new byte[10];
-			if (tcpSocket.getInputStream().read(header, 0, 10) == 10 && header[9] == 0) {
-				eventManager.triggerLampStateChanged(new LampStateChangedEvent());
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		UpdateLampsRequest request = new UpdateLampsRequest(lamps);
+		sendRequest(request);
 	}
 	
 	public void onUdpPackageReceived(UdpPacketReceivedEvent event) {
@@ -168,7 +122,12 @@ public class LuxxusClient implements UdpPackageReceivedListener {
 		}
 		
 		if (!connected) {
-			connectTcpSocket();
+			try {
+				connectTcpSocket();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		removedDevices = packet.getData()[21];
@@ -177,16 +136,11 @@ public class LuxxusClient implements UdpPackageReceivedListener {
 		gatewayId = Utility.int32FromBytes(packet.getData(), 2);
 	}
 	
-	private void connectTcpSocket() {
-		try {
-			tcpSocket = new Socket(gateway, portOut);
-			connected = true;
-			
-			eventManager.triggerGatewayConnected(new GatewayConnectedEvent());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	private void connectTcpSocket() throws IOException {
+		tcpSocket = new Socket(gateway, portOut);
+		connected = true;
+		
+		eventManager.triggerGatewayConnected(new GatewayConnectedEvent());
 	}
 	
 }

@@ -22,6 +22,14 @@ public class LuxxusLamp {
 		this.intensity = intensity;
 	}
 	
+	public int getIntensity() {
+		return intensity;
+	}
+	
+	public void setIntensity(int intensity) {
+		this.intensity = intensity;
+	}
+	
 	public void setRGB(int red, int green, int blue, int intensity) {
 		this.red = red;
 		this.green = green;

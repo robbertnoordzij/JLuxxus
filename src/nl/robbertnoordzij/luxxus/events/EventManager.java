@@ -2,11 +2,9 @@ package nl.robbertnoordzij.luxxus.events;
 
 import java.util.ArrayList;
 
-import nl.robbertnoordzij.luxxus.events.events.Event;
 import nl.robbertnoordzij.luxxus.events.events.GatewayConnectedEvent;
 import nl.robbertnoordzij.luxxus.events.events.LampStateChangedEvent;
 import nl.robbertnoordzij.luxxus.events.events.UdpPacketReceivedEvent;
-import nl.robbertnoordzij.luxxus.events.listeners.EventListener;
 import nl.robbertnoordzij.luxxus.events.listeners.GatewayConnectedListener;
 import nl.robbertnoordzij.luxxus.events.listeners.LampStateChangedListener;
 import nl.robbertnoordzij.luxxus.events.listeners.UdpPackageReceivedListener;

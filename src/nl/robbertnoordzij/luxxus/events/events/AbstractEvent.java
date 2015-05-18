@@ -1,6 +1,6 @@
 package nl.robbertnoordzij.luxxus.events.events;
 
-public abstract class Event {
+public abstract class AbstractEvent {
 	private boolean stopped = false;
 	
 	public void stopPropagation() {

@@ -12,10 +12,10 @@ public class Main {
 			public void onGatewayConnected(GatewayConnectedEvent event) {
 				Utility.sleep(1000);
 
-				// Switch all off
+				// Switch all off or off
 				LuxxusLamp[] lamps = controller.getLamps();
 				for (LuxxusLamp lamp : lamps) {
-					lamp.setRGB(0, 0, 0, 0);
+					lamp.setRGB(0, 0, 255, lamp.getIntensity() > 125 ? 0 : 255);
 				}
 				controller.updateLamps(lamps);
 				
