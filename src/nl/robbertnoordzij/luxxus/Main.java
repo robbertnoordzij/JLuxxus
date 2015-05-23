@@ -6,11 +6,14 @@ public class Main {
 		LuxxusController controller = new LuxxusController();
 		
 		controller.getEventManager().addGatewayConnectedListener((event) -> {
-			// Switch all off or off
 			LuxxusLamp[] lamps = controller.getLamps();
+			
 			for (LuxxusLamp lamp : lamps) {
-				lamp.setIntensity(lamp.getIntensity() > 125 ? 0 : 255);
+				System.out.println(lamp);
+				lamp.setRGB(0, 0, 255);
+				lamp.setIntensity(lamp.getIntensity() > 0 ? 0 : 255);
 			}
+			
 			controller.updateLamps(lamps);
 			
 			System.exit(0);

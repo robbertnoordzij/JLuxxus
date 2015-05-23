@@ -107,6 +107,10 @@ public class LuxxusClient implements UdpPackageReceivedListener {
 		GetLampsRequest request = new GetLampsRequest(gatewayId);
 		sendRequest(request);
 		byte[] data = request.getResponse();
+		
+		if (data == null) {
+			return null;
+		}
 			
 		LuxxusLamp[] lamps = new LuxxusLamp[data.length / 8];
 		
