@@ -10,69 +10,47 @@ import nl.robbertnoordzij.luxxus.events.listeners.LampStateChangedListener;
 import nl.robbertnoordzij.luxxus.events.listeners.UdpPackageReceivedListener;
 
 public class EventManager {
-	private static EventManager instance;
+	private static EventManager instance = new EventManager();
 
-	private ArrayList<GatewayConnectedListener> gatewayConnectedListeners = new ArrayList<GatewayConnectedListener>();
-	private ArrayList<LampStateChangedListener> lampStateChangedListeners = new ArrayList<LampStateChangedListener>();
-	private ArrayList<UdpPackageReceivedListener> udpPackageReceivedListeners = new ArrayList<UdpPackageReceivedListener>();
+	private EventHandler<LampStateChangedListener> lampStateChanged = new EventHandler<LampStateChangedListener>();
+	private EventHandler<GatewayConnectedListener> gatewayConnected = new EventHandler<GatewayConnectedListener>();
+	private EventHandler<UdpPackageReceivedListener> udpPackageReceived = new EventHandler<UdpPackageReceivedListener>();
 	
 	private EventManager () {
 		
 	}
 	
 	public void addLampStateChangedListener(LampStateChangedListener listener) {
-		if (!lampStateChangedListeners.contains(listener)) {
-			lampStateChangedListeners.add(listener);
-		}
+		lampStateChanged.addListener(listener);
 	}
 
 	public void addGatewayConnectedListener(GatewayConnectedListener listener) {
-		if (!gatewayConnectedListeners.contains(listener)) {
-			gatewayConnectedListeners.add(listener);
-		}
+		gatewayConnected.addListener(listener);
 	}
 	
 	public void addUdpPacketReceivedListener(UdpPackageReceivedListener listener) {
-		if (!udpPackageReceivedListeners.contains(listener)) {
-			udpPackageReceivedListeners.add(listener);
-		}
+		udpPackageReceived.addListener(listener);
 	}
 	
 	public void triggerLampStateChanged(LampStateChangedEvent event) {
-		for (LampStateChangedListener listener : lampStateChangedListeners) {
+		lampStateChanged.trigger(event, (listener) -> {
 			listener.onLampStateChanged(event);
-			
-			if (event.isStopped()) {
-				break;
-			}
-		}
+		});
 	}
 	
 	public void triggerGatewayConnected(GatewayConnectedEvent event) {
-		for (GatewayConnectedListener listener : gatewayConnectedListeners) {
+		gatewayConnected.trigger(event, (listener) -> {
 			listener.onGatewayConnected(event);
-			
-			if (event.isStopped()) {
-				break;
-			}
-		}
+		});
 	}
 	
 	public void triggerUdpPacketReceived(UdpPacketReceivedEvent event) {
-		for (UdpPackageReceivedListener listener : udpPackageReceivedListeners) {
+		udpPackageReceived.trigger(event, (listener) -> {
 			listener.onUdpPackageReceived(event);
-			
-			if (event.isStopped()) {
-				break;
-			}
-		}
+		});
 	}
 	
 	public static EventManager getInstance() {
-		if (instance == null) {
-			instance = new EventManager();
-		}
-		
 		return instance;
 	}
 }
