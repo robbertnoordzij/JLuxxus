@@ -20,7 +20,7 @@ public class LuxxusController implements GatewayConnectedListener, LampStateChan
 	}
 	
 	public void onLampStateChanged(LampStateChangedEvent event) {
-		
+		lamps = client.getLamps();
 	}
 
 	public void onGatewayConnected(GatewayConnectedEvent event) {

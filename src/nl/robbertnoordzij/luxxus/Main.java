@@ -9,7 +9,7 @@ public class Main {
 			// Switch all off or off
 			LuxxusLamp[] lamps = controller.getLamps();
 			for (LuxxusLamp lamp : lamps) {
-				lamp.setRGB(0, 0, 255, lamp.getIntensity() > 125 ? 0 : 255);
+				lamp.setIntensity(lamp.getIntensity() > 125 ? 0 : 255);
 			}
 			controller.updateLamps(lamps);
 			
