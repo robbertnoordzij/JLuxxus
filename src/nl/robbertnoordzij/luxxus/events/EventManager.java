@@ -1,7 +1,5 @@
 package nl.robbertnoordzij.luxxus.events;
 
-import java.util.ArrayList;
-
 import nl.robbertnoordzij.luxxus.events.events.GatewayConnectedEvent;
 import nl.robbertnoordzij.luxxus.events.events.LampStateChangedEvent;
 import nl.robbertnoordzij.luxxus.events.events.UdpPacketReceivedEvent;
@@ -32,19 +30,19 @@ public class EventManager {
 		udpPackageReceived.addListener(listener);
 	}
 	
-	public void triggerLampStateChanged(LampStateChangedEvent event) {
+	public void trigger(LampStateChangedEvent event) {
 		lampStateChanged.trigger(event, (listener) -> {
 			listener.onLampStateChanged(event);
 		});
 	}
 	
-	public void triggerGatewayConnected(GatewayConnectedEvent event) {
+	public void trigger(GatewayConnectedEvent event) {
 		gatewayConnected.trigger(event, (listener) -> {
 			listener.onGatewayConnected(event);
 		});
 	}
 	
-	public void triggerUdpPacketReceived(UdpPacketReceivedEvent event) {
+	public void trigger(UdpPacketReceivedEvent event) {
 		udpPackageReceived.trigger(event, (listener) -> {
 			listener.onUdpPackageReceived(event);
 		});

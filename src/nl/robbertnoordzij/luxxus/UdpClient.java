@@ -44,7 +44,7 @@ public class UdpClient {
 	}
 
 	private void processUdpPacket(DatagramPacket packet) {
-		eventManager.triggerUdpPacketReceived(new UdpPacketReceivedEvent(packet));
+		eventManager.trigger(new UdpPacketReceivedEvent(packet));
 	}
 	
 	private class ListenThread extends Thread {

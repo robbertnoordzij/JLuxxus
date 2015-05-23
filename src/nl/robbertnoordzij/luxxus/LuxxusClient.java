@@ -118,7 +118,7 @@ public class LuxxusClient implements UdpPackageReceivedListener {
 		boolean added = addedDevices != packet.getData()[22];
 		
 		if (connected && (removed || added)) {
-			eventManager.triggerLampStateChanged(new LampStateChangedEvent());
+			eventManager.trigger(new LampStateChangedEvent());
 		}
 		
 		if (!connected) {
@@ -140,7 +140,7 @@ public class LuxxusClient implements UdpPackageReceivedListener {
 		tcpSocket = new Socket(gateway, portOut);
 		connected = true;
 		
-		eventManager.triggerGatewayConnected(new GatewayConnectedEvent());
+		eventManager.trigger(new GatewayConnectedEvent());
 	}
 	
 }
