@@ -6,8 +6,6 @@ public class Main {
 		LuxxusController controller = new LuxxusController();
 		
 		controller.getEventManager().addGatewayConnectedListener((event) -> {
-			Utility.sleep(1000);
-
 			// Switch all off or off
 			LuxxusLamp[] lamps = controller.getLamps();
 			for (LuxxusLamp lamp : lamps) {

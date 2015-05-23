@@ -14,9 +14,9 @@ public class Utility {
 		return (int) b & 0xff;
 	}
 	
-	public static void sleep(int millis) {
+	public static void sleep(long sleep) {
 		try {
-			Thread.sleep(millis);
+			Thread.sleep(sleep);
 		} catch (InterruptedException e) { }
 	}
 }

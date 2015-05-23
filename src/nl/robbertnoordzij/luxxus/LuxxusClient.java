@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.time.Duration;
+import java.time.LocalTime;
 
 import nl.robbertnoordzij.luxxus.events.EventManager;
 import nl.robbertnoordzij.luxxus.events.events.GatewayConnectedEvent;
@@ -36,6 +38,10 @@ public class LuxxusClient implements UdpPackageReceivedListener {
 	
 	private byte addedDevices = 0x00;
 	
+	private LocalTime lastCommunication = null;
+	
+	private long timeOut = 200;
+	
 	public LuxxusClient() {
 		
 	}
@@ -59,7 +65,22 @@ public class LuxxusClient implements UdpPackageReceivedListener {
 		tcpSocket.close();
 	}
 	
-	private void sendRequest(AbstractLuxxusRequest request) {
+	private void rateLimitRequests() {
+		if (lastCommunication == null) {
+			return;
+		}
+		
+		Duration duration = Duration.between(lastCommunication, LocalTime.now());
+		long sleep = timeOut - duration.toMillis();
+			
+		if (sleep > 0) {
+			Utility.sleep(sleep);
+		}
+	}
+	
+	private synchronized void sendRequest(AbstractLuxxusRequest request) {
+		rateLimitRequests();
+		
 		try {
 			tcpSocket.getOutputStream().write(request.getBytes());
 			
@@ -74,6 +95,8 @@ public class LuxxusClient implements UdpPackageReceivedListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		lastCommunication = LocalTime.now();
 	}
 	
 	public LuxxusLamp[] getLamps() {
