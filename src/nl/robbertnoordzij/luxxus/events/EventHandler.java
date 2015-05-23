@@ -9,19 +9,21 @@ public class EventHandler <L extends EventListener> {
 
 	private ArrayList<L> listeners = new ArrayList<L>();
 	
-	public void addListener(L listener) {
+	public synchronized void addListener(L listener) {
 		if (!listeners.contains(listener)) {
 			listeners.add(listener);
 		}
 	}
 	
-	public void trigger(AbstractEvent event, Callable<L> callable) {
-		for (L listener : listeners) {
-			callable.call(listener);
-			
-			if (event.isStopped()) {
-				break;
+	public synchronized void trigger(AbstractEvent event, Callable<L> callable) {
+		new Thread(() -> {
+			for (L listener : listeners) {
+				callable.call(listener);
+				
+				if (event.isStopped()) {
+					break;
+				}
 			}
-		}
+		}).start();
 	}
 }
