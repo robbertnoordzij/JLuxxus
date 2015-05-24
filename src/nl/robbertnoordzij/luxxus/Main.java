@@ -9,7 +9,6 @@ public class Main {
 			LuxxusLamp[] lamps = controller.getLamps();
 			
 			for (LuxxusLamp lamp : lamps) {
-				System.out.println(lamp);
 				lamp.setRGB(0, 0, 255);
 				lamp.setIntensity(lamp.getIntensity() > 0 ? 0 : 255);
 			}

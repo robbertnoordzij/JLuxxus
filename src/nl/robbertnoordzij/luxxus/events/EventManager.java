@@ -31,21 +31,15 @@ public class EventManager {
 	}
 	
 	public void trigger(LampStateChangedEvent event) {
-		lampStateChanged.trigger(event, (listener) -> {
-			listener.onLampStateChanged(event);
-		});
+		lampStateChanged.trigger(event, listener -> listener.onLampStateChanged(event));
 	}
 	
 	public void trigger(GatewayConnectedEvent event) {
-		gatewayConnected.trigger(event, (listener) -> {
-			listener.onGatewayConnected(event);
-		});
+		gatewayConnected.trigger(event, listener -> listener.onGatewayConnected(event));
 	}
 	
 	public void trigger(UdpPacketReceivedEvent event) {
-		udpPackageReceived.trigger(event, (listener) -> {
-			listener.onUdpPackageReceived(event);
-		});
+		udpPackageReceived.trigger(event, listener -> listener.onUdpPackageReceived(event));
 	}
 	
 	public static EventManager getInstance() {
