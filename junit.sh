@@ -4,7 +4,7 @@
 wget http://search.maven.org/remotecontent?filepath=org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar -O hamcrest.jar
 wget http://search.maven.org/remotecontent?filepath=junit/junit/4.12/junit-4.12.jar -O junit.jar
 
-# Compile sources and runt tests
+# Compile sources and run tests
 mkdir -p bin
 find . -type f -name "*.java" > sources.txt
 javac -d ./bin/ -cp junit.jar @sources.txt
