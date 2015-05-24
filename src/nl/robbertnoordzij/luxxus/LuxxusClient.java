@@ -20,8 +20,6 @@ public class LuxxusClient implements UdpPackageReceivedListener {
 
 	private EventManager eventManager = EventManager.getInstance();
 	
-	private Socket tcpSocket;
-	
 	private int portIn = 41328;
 	
 	private int portOut = 41330;
@@ -60,9 +58,9 @@ public class LuxxusClient implements UdpPackageReceivedListener {
 		return connected;
 	}
 	
-	public void disconnect() throws IOException {
+	public void disconnect() {
 		udpClient.disconnect();
-		tcpSocket.close();
+		connected = false;
 	}
 	
 	private void rateLimitRequests() {
@@ -82,6 +80,8 @@ public class LuxxusClient implements UdpPackageReceivedListener {
 		rateLimitRequests();
 		
 		try {
+			Socket tcpSocket = new Socket(gateway, portOut);
+			
 			tcpSocket.getOutputStream().write(request.getBytes());
 			
 			byte[] header = new byte[10];
@@ -91,12 +91,14 @@ public class LuxxusClient implements UdpPackageReceivedListener {
 				
 				request.setResponse(bytes);
 			}
+			
+			tcpSocket.close();
+			
+			lastCommunication = LocalTime.now();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		lastCommunication = LocalTime.now();
 	}
 	
 	public LuxxusLamp[] getLamps() {
@@ -149,25 +151,14 @@ public class LuxxusClient implements UdpPackageReceivedListener {
 		}
 		
 		if (!connected) {
-			try {
-				connectTcpSocket();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			connected = true;
+			eventManager.trigger(new GatewayConnectedEvent());
 		}
 		
 		removedDevices = packet.getData()[21];
 		addedDevices = packet.getData()[22];
 		
 		gatewayId = Utility.int32FromBytes(packet.getData(), 2);
-	}
-	
-	private void connectTcpSocket() throws IOException {
-		tcpSocket = new Socket(gateway, portOut);
-		connected = true;
-		
-		eventManager.trigger(new GatewayConnectedEvent());
 	}
 	
 }
