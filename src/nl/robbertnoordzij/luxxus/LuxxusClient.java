@@ -8,6 +8,7 @@ import java.time.Duration;
 import java.time.LocalTime;
 
 import nl.robbertnoordzij.luxxus.events.EventManager;
+import nl.robbertnoordzij.luxxus.events.events.ExceptionEvent;
 import nl.robbertnoordzij.luxxus.events.events.GatewayConnectedEvent;
 import nl.robbertnoordzij.luxxus.events.events.LampStateChangedEvent;
 import nl.robbertnoordzij.luxxus.events.events.UdpPacketReceivedEvent;
@@ -96,8 +97,7 @@ public class LuxxusClient implements UdpPackageReceivedListener {
 			
 			lastCommunication = LocalTime.now();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			eventManager.trigger(new ExceptionEvent(e));
 		}
 	}
 	

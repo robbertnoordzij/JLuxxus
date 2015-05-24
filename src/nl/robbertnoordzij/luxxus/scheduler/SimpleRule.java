@@ -2,8 +2,6 @@ package nl.robbertnoordzij.luxxus.scheduler;
 
 import java.util.Calendar;
 
-import nl.robbertnoordzij.luxxus.LuxxusLamp;
-
 public class SimpleRule extends AbstractRule {
 
 	private int hour;

@@ -1,9 +1,11 @@
 package nl.robbertnoordzij.luxxus.events;
 
+import nl.robbertnoordzij.luxxus.events.events.ExceptionEvent;
 import nl.robbertnoordzij.luxxus.events.events.GatewayConnectedEvent;
 import nl.robbertnoordzij.luxxus.events.events.LampStateChangedEvent;
 import nl.robbertnoordzij.luxxus.events.events.ScheduledTaskEvent;
 import nl.robbertnoordzij.luxxus.events.events.UdpPacketReceivedEvent;
+import nl.robbertnoordzij.luxxus.events.listeners.ExceptionListener;
 import nl.robbertnoordzij.luxxus.events.listeners.GatewayConnectedListener;
 import nl.robbertnoordzij.luxxus.events.listeners.LampStateChangedListener;
 import nl.robbertnoordzij.luxxus.events.listeners.ScheduledTaskListener;
@@ -16,6 +18,7 @@ public class EventManager {
 	private EventHandler<GatewayConnectedListener> gatewayConnected = new EventHandler<GatewayConnectedListener>();
 	private EventHandler<UdpPackageReceivedListener> udpPackageReceived = new EventHandler<UdpPackageReceivedListener>();
 	private EventHandler<ScheduledTaskListener> scheduledTask = new EventHandler<ScheduledTaskListener>();
+	private EventHandler<ExceptionListener> exception = new EventHandler<ExceptionListener>();
 	
 	private EventManager () {
 		
@@ -36,6 +39,10 @@ public class EventManager {
 	public void addScheduledTaskListener(ScheduledTaskListener listener) {
 		scheduledTask.addListener(listener);
 	}
+
+	public void addExceptionListener(ExceptionListener listener) {
+		exception.addListener(listener);
+	}
 	
 	public void trigger(LampStateChangedEvent event) {
 		lampStateChanged.trigger(event, listener -> listener.onLampStateChanged(event));
@@ -51,6 +58,10 @@ public class EventManager {
 	
 	public void trigger(ScheduledTaskEvent event) {
 		scheduledTask.trigger(event, listener -> listener.onScheduledTask(event));
+	}
+	
+	public void trigger(ExceptionEvent event) {
+		exception.trigger(event, listener -> listener.onException(event));
 	}
 	
 	public static EventManager getInstance() {

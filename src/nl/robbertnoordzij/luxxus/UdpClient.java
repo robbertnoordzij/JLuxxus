@@ -6,6 +6,7 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 
 import nl.robbertnoordzij.luxxus.events.EventManager;
+import nl.robbertnoordzij.luxxus.events.events.ExceptionEvent;
 import nl.robbertnoordzij.luxxus.events.events.UdpPacketReceivedEvent;
 
 public class UdpClient {
@@ -33,8 +34,7 @@ public class UdpClient {
 			
 			listenThread.start();
 		} catch (SocketException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			eventManager.trigger(new ExceptionEvent(e));
 		}
 	}
 	
@@ -61,8 +61,7 @@ public class UdpClient {
 					udpSocket.receive(packet);
 					processUdpPacket(packet);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					eventManager.trigger(new ExceptionEvent(e));
 				}
 			}
 		}

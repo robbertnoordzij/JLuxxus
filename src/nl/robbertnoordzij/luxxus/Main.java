@@ -28,6 +28,11 @@ public class Main {
 			controller.updateLamps(lamps);
 		}));
 		
+		controller.getEventManager().addExceptionListener((event) -> {
+			System.out.println("Print exception");
+			event.getException().printStackTrace();
+		});
+		
 		scheduler.getEventManager().addScheduledTaskListener((event) -> {
 			event.getRule().execute(controller.getLamps());
 		});
