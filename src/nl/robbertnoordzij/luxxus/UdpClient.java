@@ -55,7 +55,7 @@ public class UdpClient {
 		public void run() {
 			byte[] buffer = new byte[2048];
 			DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-			
+
 			while (listen) {
 				try {
 					udpSocket.receive(packet);
