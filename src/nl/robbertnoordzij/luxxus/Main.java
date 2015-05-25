@@ -29,7 +29,7 @@ public class Main {
 		// Switch lights on 30 minutes before sunset, but no later than 22:30
 		scheduler.addRule(new SunTimeRule(location, SunTime.SUNSET)
 			.offset(-30)
-			.notAfter(LocalTime.of(22, 30))
+			.notAfter(LocalTime.of(21, 59))
 			.setScene(lamps -> {
 				for (LuxxusLamp lamp : lamps) {
 					lamp.setRGB(255, 200, 200);
@@ -41,7 +41,7 @@ public class Main {
 		scheduler.addRule(new SimpleRule().at(LocalTime.of(22, 00)).setScene(lamps -> {
 			for (LuxxusLamp lamp : lamps) {
 				lamp.setRGB(125, 125, 255);
-				lamp.setIntensity(180);
+				lamp.setIntensity(150);
 			}
 		}));
 		
