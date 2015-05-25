@@ -1,21 +1,20 @@
 package nl.robbertnoordzij.luxxus.scheduler;
 
-import java.util.Calendar;
+import java.time.LocalTime;
 
 public class SimpleRule extends AbstractRule {
 
-	private int hour;
+	private LocalTime time;
 	
-	private int minute;
-	
-	public SimpleRule(int hour, int minute) {
-		this.hour = hour;
-		this.minute = minute;
+	public SimpleRule at(LocalTime time) {
+		this.time = time;
+		
+		return this;
 	}
 	
 	public boolean shouldExecute() {
-		Calendar now = Calendar.getInstance();
+		LocalTime now = LocalTime.now();
 		
-		return now.get(Calendar.HOUR_OF_DAY) == hour && now.get(Calendar.MINUTE) == minute;
+		return now.getHour() == time.getHour() && now.getMinute() == time.getMinute();
 	}
 }

@@ -22,9 +22,12 @@ public class Calculator {
 	}
 	
 	public Calculator(int year, Month month, int dayOfMonth, Location location) {
+		this(LocalDate.of(year, month, dayOfMonth), location);
+	}
+	
+	public Calculator(LocalDate date, Location location) {
+		this.date = date;
 		this.location = location;
-		
-		date = LocalDate.of(year, month, dayOfMonth);
 	}
 	
 	public LocalDateTime getSunRise() {
