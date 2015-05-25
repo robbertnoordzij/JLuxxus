@@ -20,7 +20,8 @@ public class LuxxusController implements GatewayConnectedListener, LampStateChan
 	}
 	
 	public void onLampStateChanged(LampStateChangedEvent event) {
-		lamps = client.getLamps();
+		// Bridge is refusing connection
+		// lamps = client.getLamps();
 	}
 
 	public void onGatewayConnected(GatewayConnectedEvent event) {

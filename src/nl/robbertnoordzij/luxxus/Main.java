@@ -31,22 +31,34 @@ public class Main {
 			.offset(-30)
 			.notAfter(LocalTime.of(21, 59))
 			.setScene(lamps -> {
+				System.out.println("Switching lights on");
 				for (LuxxusLamp lamp : lamps) {
-					lamp.setRGB(255, 200, 200);
+					lamp.setRGB(255, 220, 210);
 					lamp.setIntensity(255);
 				}
 			}));
 		
 		// Dim lights at 22:00
 		scheduler.addRule(new SimpleRule().at(LocalTime.of(22, 00)).setScene(lamps -> {
-			for (LuxxusLamp lamp : lamps) {
-				lamp.setRGB(125, 125, 255);
-				lamp.setIntensity(150);
+			System.out.println("Dim lights");
+			
+			for (int i = 0; i < lamps.length; i++) {
+				LuxxusLamp lamp = lamps[i];
+				
+				if (i < 2) {
+					lamp.setRGB(20, 20, 255);
+					lamp.setIntensity(50);
+				} else {
+					lamp.setRGB(160, 180, 255);
+					lamp.setIntensity(255);
+				}
 			}
 		}));
 		
 		// Switch lights off at 23:00
 		scheduler.addRule(new SimpleRule().at(LocalTime.of(23, 00)).setScene(lamps -> {
+			System.out.println("Switching lights off");
+			
 			for (LuxxusLamp lamp : lamps) {
 				lamp.setIntensity(0);
 			}
