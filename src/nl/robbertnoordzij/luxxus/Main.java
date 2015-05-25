@@ -26,11 +26,22 @@ public class Main {
 		// Central Station Rotterdam
 		Location location = new Location(-4.469444, 51.925);
 		
-		// Switch lights on 15 minutes before sunset
-		scheduler.addRule(new SunTimeRule(location, SunTime.SUNSET).offset(-15).setScene(lamps -> {
+		// Switch lights on 30 minutes before sunset, but no later than 22:30
+		scheduler.addRule(new SunTimeRule(location, SunTime.SUNSET)
+			.offset(-30)
+			.notAfter(LocalTime.of(22, 30))
+			.setScene(lamps -> {
+				for (LuxxusLamp lamp : lamps) {
+					lamp.setRGB(255, 200, 200);
+					lamp.setIntensity(255);
+				}
+			}));
+		
+		// Dim lights at 22:00
+		scheduler.addRule(new SimpleRule().at(LocalTime.of(22, 00)).setScene(lamps -> {
 			for (LuxxusLamp lamp : lamps) {
-				lamp.setRGB(255, 200, 200);
-				lamp.setIntensity(255);
+				lamp.setRGB(125, 125, 255);
+				lamp.setIntensity(180);
 			}
 		}));
 		
