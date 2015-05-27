@@ -26,7 +26,7 @@ public class Main {
 		// Central Station Rotterdam
 		Location location = new Location(-4.469444, 51.925);
 		
-		// Switch lights on 30 minutes before sunset, but no later than 22:30
+		// Switch lights on 30 minutes before sunset, but not after 21:59
 		scheduler.addRule(new SunTimeRule(location, SunTime.SUNSET)
 			.offset(-30)
 			.notAfter(LocalTime.of(21, 59))
