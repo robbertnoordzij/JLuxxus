@@ -68,20 +68,16 @@ public class Main {
 		});
 		
 		scheduler.addTask(atBoot, () -> {
-			System.out.println("Show that has found the bridge!");
 			LampCollection lamps = controller.getLamps();
+			LampCollection original = lamps.copy();
+			
 			for (Lamp lamp : lamps) {
 				lamp.setRGB(255, 255, 255);
 				lamp.setIntensity(255);
 			}
-			controller.updateLamps(lamps);
 			
-			Utility.sleep(500);
-			
-			for (Lamp lamp : lamps) {
-				lamp.setIntensity(0);
-			}
 			controller.updateLamps(lamps);
+			controller.updateLamps(original);
 		});
 	}
 

@@ -22,6 +22,14 @@ public class Lamp {
 		this.intensity = intensity;
 	}
 	
+	public Lamp(Lamp lamp) {
+		this(lamp.getId(), lamp.getRed(), lamp.getGreen(), lamp.getBlue(), lamp.getIntensity());
+	}
+	
+	public int getId() {
+		return deviceId;
+	}
+	
 	public int getIntensity() {
 		return intensity;
 	}

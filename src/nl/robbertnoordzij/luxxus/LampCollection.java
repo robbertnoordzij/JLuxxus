@@ -31,6 +31,16 @@ public class LampCollection implements Iterable<Lamp>, Iterator<Lamp> {
 	public int getLength() {
 		return lamps.length;
 	}
+	
+	public LampCollection copy() {
+		Lamp[] copy = new Lamp[lamps.length];
+		
+		for (int i = 0; i < lamps.length; i++) {
+			copy[i] = new Lamp(lamps[i]);
+		}
+		
+		return new LampCollection(copy);
+	}
 
 	@Override
 	public Iterator<Lamp> iterator() {
