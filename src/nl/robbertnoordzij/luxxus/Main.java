@@ -26,9 +26,9 @@ public class Main {
 		// Central Station Rotterdam
 		Location location = new Location(-4.469444, 51.925);
 		
-		// Switch lights on 30 minutes before sunset, but no later than 22:30
+		// Switch lights on 45 minutes before sunset, but no later than 22:30
 		scheduler.addRule(new SunTimeRule(location, SunTime.SUNSET)
-			.offset(-30)
+			.offset(-45)
 			.notAfter(LocalTime.of(21, 59))
 			.setScene(lamps -> {
 				System.out.println("Switching lights on");
@@ -46,7 +46,7 @@ public class Main {
 				LuxxusLamp lamp = lamps[i];
 				
 				if (i < 2) {
-					lamp.setRGB(20, 20, 255);
+					lamp.setRGB(255, 220, 210);
 					lamp.setIntensity(50);
 				} else {
 					lamp.setRGB(160, 180, 255);

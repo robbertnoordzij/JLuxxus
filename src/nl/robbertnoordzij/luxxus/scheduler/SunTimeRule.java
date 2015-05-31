@@ -65,6 +65,8 @@ public class SunTimeRule extends AbstractRule {
 		
 		time = time.plus(minutes, ChronoUnit.MINUTES);
 		
+		System.out.println(time);
+		
 		return now.getHour() == time.getHour() && now.getMinute() == time.getMinute();
 	}
 

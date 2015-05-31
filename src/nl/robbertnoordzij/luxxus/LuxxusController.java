@@ -2,11 +2,9 @@ package nl.robbertnoordzij.luxxus;
 
 import nl.robbertnoordzij.luxxus.events.EventManager;
 import nl.robbertnoordzij.luxxus.events.events.GatewayConnectedEvent;
-import nl.robbertnoordzij.luxxus.events.events.LampStateChangedEvent;
 import nl.robbertnoordzij.luxxus.events.listeners.GatewayConnectedListener;
-import nl.robbertnoordzij.luxxus.events.listeners.LampStateChangedListener;
 
-public class LuxxusController implements GatewayConnectedListener, LampStateChangedListener {
+public class LuxxusController implements GatewayConnectedListener {
 	
 	private LuxxusClient client = new LuxxusClient();
 	
@@ -14,14 +12,8 @@ public class LuxxusController implements GatewayConnectedListener, LampStateChan
 	
 	public LuxxusController () {
 		client.getEventManager().addGatewayConnectedListener(this);
-		client.getEventManager().addLampStateChangedListener(this);
 		
 		client.connect();
-	}
-	
-	public void onLampStateChanged(LampStateChangedEvent event) {
-		// Bridge is refusing connection
-		// lamps = client.getLamps();
 	}
 
 	public void onGatewayConnected(GatewayConnectedEvent event) {
