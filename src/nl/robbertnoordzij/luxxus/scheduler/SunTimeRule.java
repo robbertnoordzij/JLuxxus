@@ -8,7 +8,7 @@ import java.time.temporal.ChronoUnit;
 import nl.robbertnoordzij.luxxus.sun.Calculator;
 import nl.robbertnoordzij.luxxus.sun.Location;
 
-public class SunTimeRule extends AbstractRule {
+public class SunTimeRule implements Rule {
 	private Location location;
 	
 	private SunTime type;
@@ -42,16 +42,14 @@ public class SunTimeRule extends AbstractRule {
 		return this;
 	}
 	
-	public boolean shouldExecute() {
-		LocalTime now = LocalTime.now();
-		
+	public boolean shouldExecute(LocalTime currentTime) {
 		Calculator calculator = new Calculator(LocalDate.now(), location);
 		
-		if (notBefore != null && now.isBefore(notBefore)) {
+		if (notBefore != null && currentTime.isBefore(notBefore)) {
 			return false;
 		}
 		
-		if (notAfter != null && now.isAfter(notAfter)) {
+		if (notAfter != null && currentTime.isAfter(notAfter)) {
 			return false;
 		}
 		
@@ -65,9 +63,6 @@ public class SunTimeRule extends AbstractRule {
 		
 		time = time.plus(minutes, ChronoUnit.MINUTES);
 		
-		System.out.println(time);
-		
-		return now.getHour() == time.getHour() && now.getMinute() == time.getMinute();
+		return currentTime.getHour() == time.getHour() && currentTime.getMinute() == time.getMinute();
 	}
-
 }

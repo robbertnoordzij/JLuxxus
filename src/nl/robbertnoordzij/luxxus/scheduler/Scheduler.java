@@ -1,9 +1,9 @@
 package nl.robbertnoordzij.luxxus.scheduler;
 
-import java.util.ArrayList;
+import java.time.LocalTime;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
-import nl.robbertnoordzij.luxxus.LuxxusController;
-import nl.robbertnoordzij.luxxus.LuxxusLamp;
 import nl.robbertnoordzij.luxxus.Utility;
 import nl.robbertnoordzij.luxxus.events.EventManager;
 import nl.robbertnoordzij.luxxus.events.events.ScheduledTaskEvent;
@@ -12,13 +12,9 @@ import nl.robbertnoordzij.luxxus.events.listeners.ScheduledTaskListener;
 public class Scheduler implements ScheduledTaskListener {
 	private EventManager eventManager = EventManager.getInstance();
 	
-	private volatile ArrayList<Rule> rules = new ArrayList<Rule>();
+	private volatile ConcurrentHashMap<Rule, Task> tasks = new ConcurrentHashMap<Rule, Task>();
 	
-	private LuxxusController controller;
-	
-	public Scheduler(LuxxusController controller) {
-		this.controller = controller;
-		
+	public Scheduler() {
 		eventManager.addScheduledTaskListener(this);
 	}
 	
@@ -26,26 +22,38 @@ public class Scheduler implements ScheduledTaskListener {
 		return eventManager;
 	}
 	
-	public void addRule(Rule rule) {
-		rules.add(rule);
+	public void addTask(Rule rule, Task task) {
+		tasks.put(rule, task);
 	}
 	
 	public void onScheduledTask(ScheduledTaskEvent event) {
-		LuxxusLamp[] lamps = controller.getLamps();
-		event.getRule().execute(lamps);
-		controller.updateLamps(lamps);
+		event.getTask().execute();
 	}
 	
 	public void start() {
-		new Thread(() -> {
+		new SchedulerThread().start();
+	}
+	
+	private class SchedulerThread extends Thread {
+
+		@Override
+		public void run() {
 			while (true) {
-				for (Rule rule : rules) {
-					if (rule.shouldExecute()) {
-						eventManager.trigger(new ScheduledTaskEvent(rule));
+				LocalTime currentTime = LocalTime.now();
+				
+				for(Entry<Rule, Task> entry : tasks.entrySet()) {
+					Rule rule = entry.getKey();
+					Task task = entry.getValue();
+					
+					if (!rule.shouldExecute(currentTime)) {
+						continue;
 					}
+					
+					eventManager.trigger(new ScheduledTaskEvent(task));
 				}
+				
 				Utility.sleep(60 * 1000);
 			}
-		}).start();
+		}
 	}
 }

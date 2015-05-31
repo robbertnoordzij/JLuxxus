@@ -1,15 +1,15 @@
 package nl.robbertnoordzij.luxxus.events.events;
 
-import nl.robbertnoordzij.luxxus.scheduler.Rule;
+import nl.robbertnoordzij.luxxus.scheduler.Task;
 
 public class ScheduledTaskEvent extends AbstractEvent {
-	private Rule rule;
+	private Task task;
 	
-	public ScheduledTaskEvent(Rule rule) {
-		this.rule = rule;
+	public ScheduledTaskEvent(Task task) {
+		this.task = task;
 	}
 	
-	public Rule getRule() {
-		return rule;
+	public Task getTask() {
+		return task;
 	}
 }
