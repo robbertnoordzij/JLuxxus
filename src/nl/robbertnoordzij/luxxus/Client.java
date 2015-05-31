@@ -120,7 +120,7 @@ public class Client implements UdpPackageReceivedListener {
 			int offset = (i * 8);
 			
 			int deviceId = Utility.int32FromBytes(data, offset);
-			
+
 			int red = Utility.intFromByte(data[offset + 6]);
 			int green = Utility.intFromByte(data[offset + 5]);
 			int blue = Utility.intFromByte(data[offset + 4]);

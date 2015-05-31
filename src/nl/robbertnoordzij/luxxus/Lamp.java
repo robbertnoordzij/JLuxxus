@@ -68,6 +68,13 @@ public class Lamp {
 		this.blue = blue;
 	}
 	
+	public void setRGBI(int red, int green, int blue, int intensity) {
+		this.red = red;
+		this.green = green;
+		this.blue = blue;
+		this.intensity = intensity;
+	}
+	
 	public String toString() {
 		return String.format("[%d, r=%d, g=%d, b=%d, i=%d]", deviceId, red, green, blue, intensity);
 	}

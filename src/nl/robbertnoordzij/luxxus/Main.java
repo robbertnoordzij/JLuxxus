@@ -21,24 +21,31 @@ public class Main {
 		controller.getEventManager().addGatewayConnectedListener((event) -> {
 			System.out.println("Connected to Luxxus bridge...");
 			scheduler.start();
+			
+			// Flash lights to indicate that it is connected
+			LampCollection lamps = controller.getLamps();
+			LampCollection original = lamps.copy();
+			
+			for (Lamp lamp : lamps) {
+				lamp.setRGBI(255, 255, 255, 255);
+			}
+			
+			controller.updateLamps(lamps);
+			controller.updateLamps(original);
 		});
 		
 		// Central Station Rotterdam
 		Location location = new Location(-4.469444, 51.925);
 		
 		// Describe rules for scheduler
-		Rule atSunSet = new SunTimeRule(location, SunTime.SUNSET).offset(-45).notAfter(LocalTime.of(21, 59));
+		Rule atSunSet = new SunTimeRule(location, SunTime.SUNSET).offset(-60).notAfter(LocalTime.of(21, 59));
 		Rule atLateEvening = new SimpleRule().at(LocalTime.of(22, 00));
 		Rule atNight = new SimpleRule().at(LocalTime.of(23, 00));
-		
-		// Show that it is connected
-		Rule atBoot = new SimpleRule().at(LocalTime.now());
 		
 		scheduler.addTask(atSunSet, () -> {
 			LampCollection lamps = controller.getLamps();
 			for (Lamp lamp : lamps) {
-				lamp.setRGB(255, 220, 210);
-				lamp.setIntensity(255);
+				lamp.setRGBI(255, 220, 210, 255);
 			}
 			controller.updateLamps(lamps);
 		});
@@ -49,11 +56,9 @@ public class Main {
 				Lamp lamp = lamps.at(i);
 				
 				if (i < 2) {
-					lamp.setRGB(255, 220, 210);
-					lamp.setIntensity(50);
+					lamp.setRGBI(255, 220, 210, 50);
 				} else {
-					lamp.setRGB(160, 180, 255);
-					lamp.setIntensity(255);
+					lamp.setRGBI(160, 180, 255, 255);
 				}
 			}
 			controller.updateLamps(lamps);
@@ -65,19 +70,6 @@ public class Main {
 				lamp.setIntensity(0);
 			}
 			controller.updateLamps(lamps);
-		});
-		
-		scheduler.addTask(atBoot, () -> {
-			LampCollection lamps = controller.getLamps();
-			LampCollection original = lamps.copy();
-			
-			for (Lamp lamp : lamps) {
-				lamp.setRGB(255, 255, 255);
-				lamp.setIntensity(255);
-			}
-			
-			controller.updateLamps(lamps);
-			controller.updateLamps(original);
 		});
 	}
 

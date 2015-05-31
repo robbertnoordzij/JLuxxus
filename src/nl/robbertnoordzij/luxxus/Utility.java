@@ -11,7 +11,7 @@ public class Utility {
 	}
 	
 	public static int intFromByte(byte b) {
-		return (int) b & 0xff;
+		return (int) (b & 0xff);
 	}
 	
 	public static void sleep(long sleep) {
