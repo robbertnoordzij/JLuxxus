@@ -31,8 +31,11 @@ public class Main {
 		Rule atLateEvening = new SimpleRule().at(LocalTime.of(22, 00));
 		Rule atNight = new SimpleRule().at(LocalTime.of(23, 00));
 		
+		// Show that it is connected
+		Rule atBoot = new SimpleRule().at(LocalTime.now());
+		
 		scheduler.addTask(atSunSet, () -> {
-			Lamp[] lamps = controller.getLamps();
+			LampCollection lamps = controller.getLamps();
 			for (Lamp lamp : lamps) {
 				lamp.setRGB(255, 220, 210);
 				lamp.setIntensity(255);
@@ -41,9 +44,9 @@ public class Main {
 		});
 		
 		scheduler.addTask(atLateEvening, () -> {
-			Lamp[] lamps = controller.getLamps();
-			for (int i = 0; i < lamps.length; i++) {
-				Lamp lamp = lamps[i];
+			LampCollection lamps = controller.getLamps();
+			for (int i = 0; i < lamps.getLength(); i++) {
+				Lamp lamp = lamps.at(i);
 				
 				if (i < 2) {
 					lamp.setRGB(255, 220, 210);
@@ -57,7 +60,24 @@ public class Main {
 		});
 		
 		scheduler.addTask(atNight, () -> {
-			Lamp[] lamps = controller.getLamps();
+			LampCollection lamps = controller.getLamps();
+			for (Lamp lamp : lamps) {
+				lamp.setIntensity(0);
+			}
+			controller.updateLamps(lamps);
+		});
+		
+		scheduler.addTask(atBoot, () -> {
+			System.out.println("Show that has found the bridge!");
+			LampCollection lamps = controller.getLamps();
+			for (Lamp lamp : lamps) {
+				lamp.setRGB(255, 255, 255);
+				lamp.setIntensity(255);
+			}
+			controller.updateLamps(lamps);
+			
+			Utility.sleep(500);
+			
 			for (Lamp lamp : lamps) {
 				lamp.setIntensity(0);
 			}

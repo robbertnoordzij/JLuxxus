@@ -8,7 +8,7 @@ public class Controller implements GatewayConnectedListener {
 	
 	private Client client = new Client();
 	
-	private Lamp[] lamps;
+	private LampCollection lamps;
 	
 	public Controller () {
 		client.getEventManager().addGatewayConnectedListener(this);
@@ -17,18 +17,18 @@ public class Controller implements GatewayConnectedListener {
 	}
 
 	public void onGatewayConnected(GatewayConnectedEvent event) {
-		lamps = client.getLamps();
+		lamps = new LampCollection(client.getLamps());
 	}
 	
 	public EventManager getEventManager() {
 		return client.getEventManager();
 	}
 	
-	public Lamp[] getLamps() {
+	public LampCollection getLamps() {
 		return lamps;
 	}
 	
-	public void updateLamps(Lamp[] lamps) {
-		client.updateLamps(lamps);
+	public void updateLamps(LampCollection lamps) {
+		client.updateLamps(lamps.getRaw());
 	}
 }
