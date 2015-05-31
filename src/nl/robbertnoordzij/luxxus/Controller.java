@@ -4,13 +4,13 @@ import nl.robbertnoordzij.luxxus.events.EventManager;
 import nl.robbertnoordzij.luxxus.events.events.GatewayConnectedEvent;
 import nl.robbertnoordzij.luxxus.events.listeners.GatewayConnectedListener;
 
-public class LuxxusController implements GatewayConnectedListener {
+public class Controller implements GatewayConnectedListener {
 	
-	private LuxxusClient client = new LuxxusClient();
+	private Client client = new Client();
 	
-	private LuxxusLamp[] lamps;
+	private Lamp[] lamps;
 	
-	public LuxxusController () {
+	public Controller () {
 		client.getEventManager().addGatewayConnectedListener(this);
 		
 		client.connect();
@@ -24,11 +24,11 @@ public class LuxxusController implements GatewayConnectedListener {
 		return client.getEventManager();
 	}
 	
-	public LuxxusLamp[] getLamps() {
+	public Lamp[] getLamps() {
 		return lamps;
 	}
 	
-	public void updateLamps(LuxxusLamp[] lamps) {
+	public void updateLamps(Lamp[] lamps) {
 		client.updateLamps(lamps);
 	}
 }

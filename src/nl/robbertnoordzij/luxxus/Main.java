@@ -14,7 +14,7 @@ public class Main {
 	public static void main(String[] args) {
 		Scheduler scheduler = new Scheduler();
 		
-		LuxxusController controller = new LuxxusController();
+		Controller controller = new Controller();
 		controller.getEventManager().addExceptionListener((event) -> {
 			event.getException().printStackTrace();
 		});
@@ -32,8 +32,8 @@ public class Main {
 		Rule atNight = new SimpleRule().at(LocalTime.of(23, 00));
 		
 		scheduler.addTask(atSunSet, () -> {
-			LuxxusLamp[] lamps = controller.getLamps();
-			for (LuxxusLamp lamp : lamps) {
+			Lamp[] lamps = controller.getLamps();
+			for (Lamp lamp : lamps) {
 				lamp.setRGB(255, 220, 210);
 				lamp.setIntensity(255);
 			}
@@ -41,9 +41,9 @@ public class Main {
 		});
 		
 		scheduler.addTask(atLateEvening, () -> {
-			LuxxusLamp[] lamps = controller.getLamps();
+			Lamp[] lamps = controller.getLamps();
 			for (int i = 0; i < lamps.length; i++) {
-				LuxxusLamp lamp = lamps[i];
+				Lamp lamp = lamps[i];
 				
 				if (i < 2) {
 					lamp.setRGB(255, 220, 210);
@@ -57,8 +57,8 @@ public class Main {
 		});
 		
 		scheduler.addTask(atNight, () -> {
-			LuxxusLamp[] lamps = controller.getLamps();
-			for (LuxxusLamp lamp : lamps) {
+			Lamp[] lamps = controller.getLamps();
+			for (Lamp lamp : lamps) {
 				lamp.setIntensity(0);
 			}
 			controller.updateLamps(lamps);

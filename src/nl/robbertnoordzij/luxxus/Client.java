@@ -17,7 +17,7 @@ import nl.robbertnoordzij.luxxus.requests.AbstractLuxxusRequest;
 import nl.robbertnoordzij.luxxus.requests.GetLampsRequest;
 import nl.robbertnoordzij.luxxus.requests.UpdateLampsRequest;
 
-public class LuxxusClient implements UdpPackageReceivedListener {
+public class Client implements UdpPackageReceivedListener {
 
 	private EventManager eventManager = EventManager.getInstance();
 	
@@ -41,7 +41,7 @@ public class LuxxusClient implements UdpPackageReceivedListener {
 	
 	private long timeOut = 200;
 	
-	public LuxxusClient() {
+	public Client() {
 		
 	}
 	
@@ -101,7 +101,7 @@ public class LuxxusClient implements UdpPackageReceivedListener {
 		}
 	}
 	
-	public LuxxusLamp[] getLamps() {
+	public Lamp[] getLamps() {
 		if (!connected) {
 			return null;
 		}
@@ -114,7 +114,7 @@ public class LuxxusClient implements UdpPackageReceivedListener {
 			return null;
 		}
 			
-		LuxxusLamp[] lamps = new LuxxusLamp[data.length / 8];
+		Lamp[] lamps = new Lamp[data.length / 8];
 		
 		for (int i = 0; i < lamps.length; i++) {
 			int offset = (i * 8);
@@ -126,14 +126,13 @@ public class LuxxusClient implements UdpPackageReceivedListener {
 			int blue = Utility.intFromByte(data[offset + 4]);
 			int intensity = Utility.intFromByte(data[offset + 7]);
 			
-			LuxxusLamp lamp = new LuxxusLamp(deviceId, red, green, blue, intensity);
-			lamps[i] = lamp;
+			lamps[i] = new Lamp(deviceId, red, green, blue, intensity);
 		}
 		
 		return lamps;
 	}
 	
-	public void updateLamps(LuxxusLamp[] lamps) {
+	public void updateLamps(Lamp[] lamps) {
 		UpdateLampsRequest request = new UpdateLampsRequest(lamps);
 		sendRequest(request);
 	}

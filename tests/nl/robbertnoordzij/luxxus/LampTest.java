@@ -5,13 +5,13 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-public class LuxxusLampTest {
+public class LampTest {
 
-	private LuxxusLamp lamp;
+	private Lamp lamp;
 	
 	@Before
 	public void setUp() {
-		lamp = new LuxxusLamp(123123, 125, 0, 255, 35);
+		lamp = new Lamp(123123, 125, 0, 255, 35);
 	}
 
 	@Test

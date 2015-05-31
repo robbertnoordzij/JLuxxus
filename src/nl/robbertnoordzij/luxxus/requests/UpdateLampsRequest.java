@@ -3,13 +3,13 @@ package nl.robbertnoordzij.luxxus.requests;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import nl.robbertnoordzij.luxxus.LuxxusLamp;
+import nl.robbertnoordzij.luxxus.Lamp;
 
 public class UpdateLampsRequest extends AbstractLuxxusRequest {
 
 	ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 	
-	public UpdateLampsRequest(LuxxusLamp[] lamps) {
+	public UpdateLampsRequest(Lamp[] lamps) {
 		try {
 			buffer.write(new byte[] {
 					(byte) 0xf2,
@@ -33,7 +33,7 @@ public class UpdateLampsRequest extends AbstractLuxxusRequest {
 	        		0x43
 	        });
 
-			for (LuxxusLamp lamp : lamps) {
+			for (Lamp lamp : lamps) {
 				buffer.write(lamp.getBytes());
 			}
 		} catch (IOException e) {

@@ -3,7 +3,7 @@ package nl.robbertnoordzij.luxxus;
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 
-public class LuxxusLamp {
+public class Lamp {
 	private int deviceId;
 	
 	private int red;
@@ -14,7 +14,7 @@ public class LuxxusLamp {
 	
 	private int intensity;
 	
-	public LuxxusLamp(int deviceId, int red, int green, int blue, int intensity) {
+	public Lamp(int deviceId, int red, int green, int blue, int intensity) {
 		this.deviceId = deviceId;
 		this.red = red;
 		this.green = green;
