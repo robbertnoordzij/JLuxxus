@@ -20,6 +20,7 @@ public class Main {
 		});
 		controller.getEventManager().addGatewayConnectedListener((event) -> {
 			System.out.println("Connected to Luxxus bridge...");
+			
 			scheduler.start();
 			
 			// Flash lights to indicate that it is connected

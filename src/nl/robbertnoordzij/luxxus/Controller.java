@@ -2,22 +2,27 @@ package nl.robbertnoordzij.luxxus;
 
 import nl.robbertnoordzij.luxxus.events.EventManager;
 import nl.robbertnoordzij.luxxus.events.events.GatewayConnectedEvent;
+import nl.robbertnoordzij.luxxus.events.events.LampStateChangedEvent;
 import nl.robbertnoordzij.luxxus.events.listeners.GatewayConnectedListener;
+import nl.robbertnoordzij.luxxus.events.listeners.LampStateChangedListener;
 
-public class Controller implements GatewayConnectedListener {
+public class Controller implements GatewayConnectedListener, LampStateChangedListener {
 	
 	private Client client = new Client();
 	
-	private LampCollection lamps;
-	
 	public Controller () {
 		client.getEventManager().addGatewayConnectedListener(this);
+		client.getEventManager().addLampStateChangedListener(this);
 		
 		client.connect();
 	}
+	
+	public void onLampStateChanged(LampStateChangedEvent event) {
+		
+	}
 
 	public void onGatewayConnected(GatewayConnectedEvent event) {
-		lamps = new LampCollection(client.getLamps());
+		
 	}
 	
 	public EventManager getEventManager() {
@@ -25,7 +30,7 @@ public class Controller implements GatewayConnectedListener {
 	}
 	
 	public LampCollection getLamps() {
-		return lamps;
+		return new LampCollection(client.getLamps());
 	}
 	
 	public void updateLamps(LampCollection lamps) {

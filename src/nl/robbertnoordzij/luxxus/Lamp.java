@@ -95,4 +95,18 @@ public class Lamp {
 		
 		return buffer.toByteArray();
 	}
+	
+	public boolean equals(Object object) {
+		if (! (object instanceof Lamp)) {
+			return false;
+		}
+		
+		Lamp other = (Lamp) object;
+		
+		return other.getId() == this.getId() &&
+				other.getRed() == this.getRed() &&
+				other.getGreen() == this.getGreen() &&
+				other.getBlue() == this.getBlue() &&
+				other.getIntensity() == this.getIntensity();
+	}
 }

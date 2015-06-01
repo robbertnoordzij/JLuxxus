@@ -39,7 +39,7 @@ public class Client implements UdpPackageReceivedListener {
 	
 	private LocalTime lastCommunication = null;
 	
-	private long timeOut = 200;
+	private long timeOut = 300;
 	
 	public Client() {
 		
@@ -86,6 +86,7 @@ public class Client implements UdpPackageReceivedListener {
 			tcpSocket.getOutputStream().write(request.getBytes());
 			
 			byte[] header = new byte[10];
+			
 			if (tcpSocket.getInputStream().read(header, 0, 10) == 10 && header[9] > 0) {
 				byte[] bytes = new byte[header[9]];
 				tcpSocket.getInputStream().read(bytes, 0, header[9]);
@@ -93,9 +94,9 @@ public class Client implements UdpPackageReceivedListener {
 				request.setResponse(bytes);
 			}
 			
-			tcpSocket.close();
-			
 			lastCommunication = LocalTime.now();
+			
+			tcpSocket.close();
 		} catch (IOException e) {
 			eventManager.trigger(new ExceptionEvent(e));
 		}

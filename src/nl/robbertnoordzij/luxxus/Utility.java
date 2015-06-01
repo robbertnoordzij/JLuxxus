@@ -19,4 +19,14 @@ public class Utility {
 			Thread.sleep(sleep);
 		} catch (InterruptedException e) { }
 	}
+	
+	public static String debugByte(byte[] bytes) {
+		StringBuilder sb = new StringBuilder();
+		
+	    for (byte b : bytes) {
+	        sb.append(String.format("%02X ", b));
+	    }
+	    
+	    return sb.toString();
+	}
 }
