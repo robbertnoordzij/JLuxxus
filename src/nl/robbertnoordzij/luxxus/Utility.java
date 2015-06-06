@@ -17,7 +17,9 @@ public class Utility {
 	public static void sleep(long sleep) {
 		try {
 			Thread.sleep(sleep);
-		} catch (InterruptedException e) { }
+		} catch (InterruptedException e) { 
+			e.printStackTrace();
+		}
 	}
 	
 	public static String debugByte(byte[] bytes) {

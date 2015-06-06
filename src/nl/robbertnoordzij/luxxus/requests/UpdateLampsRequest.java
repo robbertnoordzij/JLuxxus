@@ -37,7 +37,6 @@ public class UpdateLampsRequest extends AbstractLuxxusRequest {
 				buffer.write(lamp.getBytes());
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

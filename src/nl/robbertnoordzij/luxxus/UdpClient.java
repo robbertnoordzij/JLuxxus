@@ -35,6 +35,7 @@ public class UdpClient {
 			listenThread.start();
 		} catch (SocketException e) {
 			eventManager.trigger(new ExceptionEvent(e));
+			e.printStackTrace();
 		}
 	}
 	

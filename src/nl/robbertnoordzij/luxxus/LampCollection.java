@@ -60,4 +60,29 @@ public class LampCollection implements Iterable<Lamp>, Iterator<Lamp> {
 	public Lamp next() {
 		return lamps[current++];
 	}
+	
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (Lamp lamp : lamps) {
+			sb.append(lamp);
+			sb.append(", ");
+		}
+		return sb.toString();
+	}
+	
+	public boolean equals(Object object) {
+		if (! (object instanceof LampCollection)) {
+			return false;
+		}
+		
+		LampCollection other = (LampCollection) object;
+		
+		for (int i = 0; i < lamps.length; i++) {
+			if (!lamps[i].equals(other.at(i))) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
 }

@@ -3,6 +3,7 @@ package nl.robbertnoordzij.luxxus;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.time.Duration;
 import java.time.LocalTime;
@@ -39,7 +40,7 @@ public class Client implements UdpPackageReceivedListener {
 	
 	private LocalTime lastCommunication = null;
 	
-	private long timeOut = 300;
+	private long timeOut = 500;
 	
 	public Client() {
 		
@@ -81,7 +82,10 @@ public class Client implements UdpPackageReceivedListener {
 		rateLimitRequests();
 		
 		try {
-			Socket tcpSocket = new Socket(gateway, portOut);
+			Socket tcpSocket = new Socket();
+			
+			tcpSocket.connect(new InetSocketAddress(gateway, portOut), 5000);
+			tcpSocket.setSoTimeout(5000);
 			
 			tcpSocket.getOutputStream().write(request.getBytes());
 			
@@ -99,6 +103,7 @@ public class Client implements UdpPackageReceivedListener {
 			tcpSocket.close();
 		} catch (IOException e) {
 			eventManager.trigger(new ExceptionEvent(e));
+			e.printStackTrace();
 		}
 	}
 	

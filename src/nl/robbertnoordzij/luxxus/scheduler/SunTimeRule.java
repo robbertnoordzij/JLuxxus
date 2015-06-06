@@ -62,7 +62,7 @@ public class SunTimeRule implements Rule {
 		}
 		
 		time = time.plus(minutes, ChronoUnit.MINUTES);
-		
+
 		return currentTime.getHour() == time.getHour() && currentTime.getMinute() == time.getMinute();
 	}
 }

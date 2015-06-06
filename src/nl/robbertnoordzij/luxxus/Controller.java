@@ -1,5 +1,7 @@
 package nl.robbertnoordzij.luxxus;
 
+import java.time.LocalTime;
+
 import nl.robbertnoordzij.luxxus.events.EventManager;
 import nl.robbertnoordzij.luxxus.events.events.GatewayConnectedEvent;
 import nl.robbertnoordzij.luxxus.events.events.LampStateChangedEvent;
@@ -34,6 +36,18 @@ public class Controller implements GatewayConnectedListener, LampStateChangedLis
 	}
 	
 	public void updateLamps(LampCollection lamps) {
+		System.out.println(LocalTime.now() + " Updating light state...");
+		
 		client.updateLamps(lamps.getRaw());
+		
+		Utility.sleep(5000);
+		
+		// Retry
+		if  (! getLamps().equals(lamps)) {
+			System.out.println(LocalTime.now() + " Failed to switch lights...");
+			client.updateLamps(lamps.getRaw());
+		} else {
+			System.out.println(LocalTime.now() + " Confirmed...");
+		}
 	}
 }
