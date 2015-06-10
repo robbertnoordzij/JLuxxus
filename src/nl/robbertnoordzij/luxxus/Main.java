@@ -20,7 +20,7 @@ public class Main {
 		});
 		controller.getEventManager().addGatewayConnectedListener((event) -> {
 			System.out.println("Connected to Luxxus bridge...");
-			
+
 			// Flash lights to indicate that it is connected
 			LampCollection lamps = controller.getLamps();
 			LampCollection original = lamps.copy();
@@ -39,11 +39,11 @@ public class Main {
 		Location location = new Location(-4.469444, 51.925);
 		
 		// Describe rules for scheduler
-		Rule atSunSet = new SunTimeRule(location, SunTime.SUNSET).offset(-60).notAfter(LocalTime.of(21, 59));
-		Rule atLateEvening = new SimpleRule().at(LocalTime.of(22, 00));
+		Rule beforeSunSet = new SunTimeRule(location, SunTime.SUNSET).offset(-45).notAfter(LocalTime.of(22, 59));
+		Rule afterSunSet = new SunTimeRule(location, SunTime.SUNSET).offset(+30).notAfter(LocalTime.of(22, 59));
 		Rule atNight = new SimpleRule().at(LocalTime.of(23, 00));
-		
-		scheduler.addTask(atSunSet, () -> {
+
+		scheduler.addTask(beforeSunSet, () -> {
 			LampCollection lamps = controller.getLamps();
 			for (Lamp lamp : lamps) {
 				lamp.setRGBI(255, 220, 210, 255);
@@ -51,7 +51,7 @@ public class Main {
 			controller.updateLamps(lamps);
 		});
 		
-		scheduler.addTask(atLateEvening, () -> {
+		scheduler.addTask(afterSunSet, () -> {
 			LampCollection lamps = controller.getLamps();
 			for (int i = 0; i < lamps.getLength(); i++) {
 				Lamp lamp = lamps.at(i);

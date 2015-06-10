@@ -2,9 +2,10 @@ package nl.robbertnoordzij.luxxus.scheduler;
 
 import java.time.LocalTime;
 import java.util.Map.Entry;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
-import nl.robbertnoordzij.luxxus.Utility;
 import nl.robbertnoordzij.luxxus.events.EventManager;
 import nl.robbertnoordzij.luxxus.events.events.ScheduledTaskEvent;
 import nl.robbertnoordzij.luxxus.events.listeners.ScheduledTaskListener;
@@ -13,6 +14,8 @@ public class Scheduler implements ScheduledTaskListener {
 	private EventManager eventManager = EventManager.getInstance();
 	
 	private volatile ConcurrentHashMap<Rule, Task> tasks = new ConcurrentHashMap<Rule, Task>();
+	
+	private Timer timer = new Timer();
 	
 	public Scheduler() {
 		eventManager.addScheduledTaskListener(this);
@@ -31,28 +34,31 @@ public class Scheduler implements ScheduledTaskListener {
 	}
 	
 	public void start() {
-		new SchedulerThread().start();
+		timer.scheduleAtFixedRate(new SchedulerTask(), 0, 60 * 1000);
 	}
 	
-	private class SchedulerThread extends Thread {
-
+	private class SchedulerTask extends TimerTask {
 		@Override
 		public void run() {
-			while (true) {
-				LocalTime currentTime = LocalTime.now();
+			LocalTime currentTime = LocalTime.now();
+			
+			for(Entry<Rule, Task> entry : tasks.entrySet()) {
+				Rule rule = entry.getKey();
+				Task task = entry.getValue();
 				
-				for(Entry<Rule, Task> entry : tasks.entrySet()) {
-					Rule rule = entry.getKey();
-					Task task = entry.getValue();
-					
-					if (!rule.shouldExecute(currentTime)) {
-						continue;
-					}
-					
-					eventManager.trigger(new ScheduledTaskEvent(task));
+				LocalTime executeAt = rule.executeAt();
+				if (executeAt == null) {
+					continue;
 				}
 				
-				Utility.sleep(60 * 1000);
+				boolean execute = executeAt.getMinute() == currentTime.getMinute() 
+						&& executeAt.getHour() == currentTime.getHour();
+				
+				if (!execute) {
+					continue;
+				}
+
+				eventManager.trigger(new ScheduledTaskEvent(task));
 			}
 		}
 	}

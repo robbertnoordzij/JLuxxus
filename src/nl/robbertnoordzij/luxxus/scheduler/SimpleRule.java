@@ -12,7 +12,7 @@ public class SimpleRule implements Rule {
 		return this;
 	}
 	
-	public boolean shouldExecute(LocalTime currentTime) {
-		return currentTime.getHour() == time.getHour() && currentTime.getMinute() == time.getMinute();
+	public LocalTime executeAt() {
+		return time;
 	}
 }

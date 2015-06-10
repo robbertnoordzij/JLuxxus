@@ -42,15 +42,15 @@ public class SunTimeRule implements Rule {
 		return this;
 	}
 	
-	public boolean shouldExecute(LocalTime currentTime) {
+	public LocalTime executeAt() {
 		Calculator calculator = new Calculator(LocalDate.now(), location);
 		
-		if (notBefore != null && currentTime.isBefore(notBefore)) {
-			return false;
+		if (notBefore != null && LocalTime.now().isBefore(notBefore)) {
+			return null;
 		}
 		
-		if (notAfter != null && currentTime.isAfter(notAfter)) {
-			return false;
+		if (notAfter != null && LocalTime.now().isAfter(notAfter)) {
+			return null;
 		}
 		
 		LocalDateTime time;
@@ -63,6 +63,6 @@ public class SunTimeRule implements Rule {
 		
 		time = time.plus(minutes, ChronoUnit.MINUTES);
 
-		return currentTime.getHour() == time.getHour() && currentTime.getMinute() == time.getMinute();
+		return time.toLocalTime();
 	}
 }
