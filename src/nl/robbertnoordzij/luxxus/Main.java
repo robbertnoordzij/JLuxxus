@@ -42,7 +42,7 @@ public class Main {
 		Rule beforeSunSet = new SunTimeRule(location, SunTime.SUNSET).offset(-45).notAfter(LocalTime.of(22, 59));
 		Rule afterSunSet = new SunTimeRule(location, SunTime.SUNSET).offset(+30).notAfter(LocalTime.of(22, 59));
 		Rule atNight = new SimpleRule().at(LocalTime.of(23, 00));
-
+		
 		scheduler.addTask(beforeSunSet, () -> {
 			LampCollection lamps = controller.getLamps();
 			for (Lamp lamp : lamps) {

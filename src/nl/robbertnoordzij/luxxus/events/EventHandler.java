@@ -16,12 +16,14 @@ public class EventHandler <L extends EventListener> {
 	}
 	
 	public synchronized void trigger(AbstractEvent event, Callable<L> callable) {
-		for (L listener : listeners) {
-			callable.call(listener);
-			
-			if (event.isStopped()) {
-				break;
+		new Thread(() -> {
+			for (L listener : listeners) {
+				callable.call(listener);
+				
+				if (event.isStopped()) {
+					break;
+				}
 			}
-		}
+		}).start();
 	}
 }

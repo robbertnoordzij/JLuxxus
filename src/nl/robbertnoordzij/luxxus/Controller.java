@@ -36,18 +36,14 @@ public class Controller implements GatewayConnectedListener, LampStateChangedLis
 	}
 	
 	public void updateLamps(LampCollection lamps) {
-		System.out.println(LocalTime.now() + " Updating light state...");
-		
 		client.updateLamps(lamps.getRaw());
 		
 		Utility.sleep(5000);
 		
 		// Retry
 		if  (! getLamps().equals(lamps)) {
-			System.out.println(LocalTime.now() + " Failed to switch lights...");
+			System.out.println(LocalTime.now() + " Retry...");
 			client.updateLamps(lamps.getRaw());
-		} else {
-			System.out.println(LocalTime.now() + " Confirmed...");
 		}
 	}
 }
