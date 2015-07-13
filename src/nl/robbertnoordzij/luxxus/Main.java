@@ -1,6 +1,7 @@
 package nl.robbertnoordzij.luxxus;
 
 import java.time.LocalTime;
+import java.util.HashMap;
 
 import nl.robbertnoordzij.luxxus.scheduler.Rule;
 import nl.robbertnoordzij.luxxus.scheduler.Scheduler;
@@ -18,6 +19,7 @@ public class Main {
 		controller.getEventManager().addExceptionListener((event) -> {
 			event.getException().printStackTrace();
 		});
+
 		controller.getEventManager().addGatewayConnectedListener((event) -> {
 			System.out.println("Connected to Luxxus bridge...");
 
@@ -43,6 +45,13 @@ public class Main {
 		Rule afterSunSet = new SunTimeRule(location, SunTime.SUNSET).offset(+30).notAfter(LocalTime.of(22, 59));
 		Rule atNight = new SimpleRule().at(LocalTime.of(23, 00));
 		
+		HashMap<String, Integer> namedLamps = new HashMap<String, Integer>();
+		
+		namedLamps.put("front_left", 1680764563);
+		namedLamps.put("front_right", 1680764191);
+		namedLamps.put("back_left", 1661865015);
+		namedLamps.put("back_right", 1661867169);
+		
 		scheduler.addTask(beforeSunSet, () -> {
 			LampCollection lamps = controller.getLamps();
 			for (Lamp lamp : lamps) {
@@ -53,10 +62,8 @@ public class Main {
 		
 		scheduler.addTask(afterSunSet, () -> {
 			LampCollection lamps = controller.getLamps();
-			for (int i = 0; i < lamps.getLength(); i++) {
-				Lamp lamp = lamps.at(i);
-				
-				if (i < 2) {
+			for (Lamp lamp : lamps) {
+				if (lamp.getAlias() == namedLamps.get("front_left") || lamp.getAlias() == namedLamps.get("front_right")) {
 					lamp.setRGBI(255, 220, 210, 50);
 				} else {
 					lamp.setRGBI(160, 180, 255, 255);

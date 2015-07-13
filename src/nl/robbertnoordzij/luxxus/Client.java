@@ -28,9 +28,9 @@ public class Client implements UdpPackageReceivedListener {
 	
 	private UdpClient udpClient;
 	
-	private InetAddress gateway;
+	private volatile InetAddress gateway;
 	
-	private int gatewayId;
+	private volatile int gatewayId;
 	
 	private boolean connected = false;
 	
@@ -108,6 +108,7 @@ public class Client implements UdpPackageReceivedListener {
 			
 			tcpSocket.close();
 		} catch (IOException e) {
+			e.printStackTrace();
 			eventManager.trigger(new ExceptionEvent(e));
 		}
 	}

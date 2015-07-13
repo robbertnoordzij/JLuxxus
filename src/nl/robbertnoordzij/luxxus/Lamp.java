@@ -30,6 +30,10 @@ public class Lamp {
 		return deviceId;
 	}
 	
+	public int getAlias() {
+		return -1 * deviceId;
+	}
+	
 	public int getIntensity() {
 		return intensity;
 	}
