@@ -31,15 +31,15 @@ public class Controller implements GatewayConnectedListener, LampStateChangedLis
 		return client.getEventManager();
 	}
 	
-	public LampCollection getLamps() {
-		return new LampCollection(client.getLamps());
+	public Collection getLamps() {
+		return new Collection(client.getLamps());
 	}
 	
-	public void updateLamps(LampCollection lamps) {
+	public void updateLamps(Collection lamps) {
 		updateLamps(lamps, true);
 	}
 	
-	public void updateLamps(LampCollection lamps, boolean confirm) {
+	public void updateLamps(Collection lamps, boolean confirm) {
 		client.updateLamps(lamps.getRaw());
 		
 		if (confirm) {

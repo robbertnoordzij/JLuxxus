@@ -2,13 +2,13 @@ package nl.robbertnoordzij.luxxus;
 
 import java.util.Iterator;
 
-public class LampCollection implements Iterable<Lamp>, Iterator<Lamp> {
+public class Collection implements Iterable<Lamp>, Iterator<Lamp> {
 
 	private Lamp[] lamps;
 	
 	private int current = 0;
 	
-	public LampCollection(Lamp[] lamps) {
+	public Collection(Lamp[] lamps) {
 		this.lamps = lamps;
 	}
 	
@@ -32,19 +32,19 @@ public class LampCollection implements Iterable<Lamp>, Iterator<Lamp> {
 		return lamps.length;
 	}
 	
-	public LampCollection copy() {
+	public Collection copy() {
 		Lamp[] copy = new Lamp[lamps.length];
 		
 		for (int i = 0; i < lamps.length; i++) {
 			copy[i] = new Lamp(lamps[i]);
 		}
 		
-		return new LampCollection(copy);
+		return new Collection(copy);
 	}
 
 	@Override
 	public Iterator<Lamp> iterator() {
-		LampCollection itarable =  new LampCollection(lamps);
+		Collection itarable =  new Collection(lamps);
 		
 		itarable.reset();
 		
@@ -71,11 +71,11 @@ public class LampCollection implements Iterable<Lamp>, Iterator<Lamp> {
 	}
 	
 	public boolean equals(Object object) {
-		if (! (object instanceof LampCollection)) {
+		if (! (object instanceof Collection)) {
 			return false;
 		}
 		
-		LampCollection other = (LampCollection) object;
+		Collection other = (Collection) object;
 		
 		for (int i = 0; i < lamps.length; i++) {
 			if (!lamps[i].equals(other.at(i))) {

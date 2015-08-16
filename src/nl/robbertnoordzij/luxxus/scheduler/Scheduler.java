@@ -1,5 +1,6 @@
 package nl.robbertnoordzij.luxxus.scheduler;
 
+import java.security.InvalidParameterException;
 import java.time.LocalTime;
 import java.util.Map.Entry;
 import java.util.Timer;
@@ -26,6 +27,10 @@ public class Scheduler implements ScheduledTaskListener {
 	}
 	
 	public void addTask(Rule rule, Task task) {
+		if (rule == null || task == null) {
+			throw new InvalidParameterException();
+		}
+		
 		tasks.put(rule, task);
 	}
 	
