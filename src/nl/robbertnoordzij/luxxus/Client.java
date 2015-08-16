@@ -149,6 +149,10 @@ public class Client implements UdpPackageReceivedListener {
 		sendRequest(request);
 	}
 	
+	public LocalTime getLastCommunication() {
+		return lastCommunication;
+	}
+	
 	public void onUdpPackageReceived(UdpPacketReceivedEvent event) {
 		DatagramPacket packet = event.getPacket();
 		

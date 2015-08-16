@@ -12,6 +12,8 @@ public class Controller implements GatewayConnectedListener, LampStateChangedLis
 	
 	private Client client = new Client();
 	
+	private boolean connected = false;
+	
 	public Controller () {
 		client.getEventManager().addGatewayConnectedListener(this);
 		client.getEventManager().addLampStateChangedListener(this);
@@ -24,7 +26,7 @@ public class Controller implements GatewayConnectedListener, LampStateChangedLis
 	}
 
 	public void onGatewayConnected(GatewayConnectedEvent event) {
-		
+		connected = true;
 	}
 	
 	public EventManager getEventManager() {
@@ -51,5 +53,25 @@ public class Controller implements GatewayConnectedListener, LampStateChangedLis
 				client.updateLamps(lamps.getRaw());
 			}
 		}
+	}
+	
+	public boolean areAllLightsOff() {
+		Collection lamps = getLamps();
+		
+		for (Lamp lamp : lamps) {
+			if (lamp.getIntensity() != 0) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	public boolean isConnected() {
+		return connected;
+	}
+	
+	public LocalTime getLastCommunication() {
+		return client.getLastCommunication();
 	}
 }
