@@ -1,6 +1,8 @@
 package nl.robbertnoordzij.luxxus;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Map.Entry;
 
 import nl.robbertnoordzij.luxxus.scheduler.Scheduler;
 import nl.robbertnoordzij.luxxus.scheduler.Task;
@@ -9,6 +11,7 @@ import nl.robbertnoordzij.luxxus.server.Response;
 import nl.robbertnoordzij.luxxus.server.Server;
 import nl.robbertnoordzij.luxxus.store.LampStore;
 import nl.robbertnoordzij.luxxus.store.RuleStore;
+import nl.robbertnoordzij.luxxus.scheduler.Rule;
 
 public class Main {
 	
@@ -107,6 +110,22 @@ public class Main {
 					lightsOff.execute();
 				}).start();
 				response.setContent("{\"state\":\"DONE\"}");
+				return;
+			}
+			
+			if (request.getPath().equals("/rules.json")) {
+				ArrayList<String> rules = new ArrayList<String>();
+				
+				for (Entry<String,Rule> entry : ruleStore.getRules().entrySet()) {
+					String executeAt = entry.getValue().executeAt().format(DateTimeFormatter.ISO_LOCAL_TIME);
+					rules.add(
+							"{\"name\":\"" + entry.getKey() + 
+							"\", \"executeAt\":\"" + executeAt + 
+							"\", \"class\":\"" + entry.getValue().getClass().getName() + 
+							"\"}");
+				}
+				
+				response.setContent("{\"rules\":[" + Utility.implode(rules, ", ") + "]}");
 				return;
 			}
 

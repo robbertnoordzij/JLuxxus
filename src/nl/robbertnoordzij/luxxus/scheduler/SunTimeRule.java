@@ -45,14 +45,6 @@ public class SunTimeRule implements Rule {
 	public LocalTime executeAt() {
 		Calculator calculator = new Calculator(LocalDate.now(), location);
 		
-		if (notBefore != null && LocalTime.now().isBefore(notBefore)) {
-			return null;
-		}
-		
-		if (notAfter != null && LocalTime.now().isAfter(notAfter)) {
-			return null;
-		}
-		
 		LocalDateTime time;
 		
 		if (type == SunTime.SUNRISE) {
@@ -61,8 +53,16 @@ public class SunTimeRule implements Rule {
 			time = calculator.getSunSet();
 		}
 		
-		time = time.plus(minutes, ChronoUnit.MINUTES);
+		LocalTime localTime = time.plus(minutes, ChronoUnit.MINUTES).toLocalTime();
+		
+		if (notBefore != null && localTime.isBefore(notBefore)) {
+			return notBefore;
+		}
+		
+		if (notAfter != null && localTime.isAfter(notAfter)) {
+			return notAfter;
+		}
 
-		return time.toLocalTime();
+		return localTime;
 	}
 }

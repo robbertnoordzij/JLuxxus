@@ -20,7 +20,9 @@ public class RuleStore {
 		Rule beforeSunSet = new SunTimeRule(location, SunTime.SUNSET).offset(-45).notAfter(LocalTime.of(22, 59));
 		namedRules.put("before_sunset", beforeSunSet);
 		
-		Rule afterSunSet = new SunTimeRule(location, SunTime.SUNSET).offset(+30).notAfter(LocalTime.of(22, 59));
+		Rule afterSunSet = new SunTimeRule(location, SunTime.SUNSET).offset(+30)
+				.notBefore(LocalTime.of(21, 30))
+				.notAfter(LocalTime.of(22, 59));
 		namedRules.put("after_sunset", afterSunSet);
 		
 		Rule atNight = new SimpleRule().at(LocalTime.of(23, 00));
@@ -29,5 +31,9 @@ public class RuleStore {
 	
 	public Rule get(String name) {
 		return namedRules.get(name);
+	}
+	
+	public HashMap<String, Rule> getRules() {
+		return namedRules;
 	}
 }

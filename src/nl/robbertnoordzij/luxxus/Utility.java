@@ -1,5 +1,7 @@
 package nl.robbertnoordzij.luxxus;
 
+import java.util.List;
+
 public class Utility {
 	public static int int32FromBytes(byte[] bytes, int offset) {
 		int result = intFromByte(bytes[offset]);
@@ -30,5 +32,18 @@ public class Utility {
 	    }
 	    
 	    return sb.toString();
+	}
+	
+	public static String implode(List<String> list, String seperator) {
+		StringBuilder sb = new StringBuilder();
+		
+		for (String string : list) {
+			if ((sb.length() != 0)) {
+				sb.append(seperator);
+			}
+			sb.append(string);
+		}
+		
+		return sb.toString();
 	}
 }
